@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-//   GestureResponderEvent,
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 
@@ -13,7 +12,6 @@ interface NavBarProps {
   iconName: keyof typeof Ionicons.glyphMap
   onLabelPress?: () => void 
   onIconPress?: () => void 
-//   onIconPress?: (event: GestureResponderEvent) => void // Maybe need this gesture?
 }
 
 export const NavBar = ({

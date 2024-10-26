@@ -4,6 +4,9 @@ import * as Location from "expo-location"
 import axios from "axios"
 import { NavBar } from "../components/NavBar"
 import { WeatherBanner } from "../components/WeatherBanner"
+import IconButton from "../components/IconButton"
+import { useNavigation, NavigationProp } from "@react-navigation/native"
+import { MainStackParamList } from "../navigation/MainStack"
 
 interface Weather {
   name: string
@@ -21,6 +24,8 @@ interface Weather {
 const HomeScreen = () => {
   const [weather, setWeather] = useState<Weather | null>(null)
   const [error, setError] = useState<string>("")
+
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>()
 
   useEffect(() => {
     const getLocationAndFetchWeather = async () => {
@@ -61,10 +66,14 @@ const HomeScreen = () => {
       setWeather(response.data)
       console.log("response.data", response.data)
     } catch (err) {
-    //   console.error("Error details:", err.response?.data || err.message)
+      //   console.error("Error details:", err.response?.data || err.message)
       console.log(JSON.stringify(err, null, 2))
       setError("Error fetching weather data")
     }
+  }
+
+  const navigateToScreen = (screen: keyof MainStackParamList) => {
+    navigation.navigate(screen)
   }
 
   if (error) {
@@ -76,16 +85,24 @@ const HomeScreen = () => {
       <NavBar
         label="Saved"
         iconName="add"
-        onLabelPress={() => console.log("Label pressed")}
-        onIconPress={() => console.log("Icon pressed")}
+        onLabelPress={() => navigateToScreen("SavedLocations")}
+        onIconPress={() => navigateToScreen("CitySearch")}
       />
       {weather ? (
-        <WeatherBanner
-          location={weather.name}
-          country={weather.sys.country}
-          temperature={weather.main.temp}
-          description={weather.weather[0].main}
-        />
+        <>
+          <WeatherBanner
+            location={weather.name}
+            country={weather.sys.country}
+            temperature={weather.main.temp}
+            description={weather.weather[0].main}
+          />
+          {/* <Text> Add more info about current weather conditions</Text> */}
+          <IconButton
+            iconName="calendar"
+            title="View weekly forecast"
+            onPress={() => navigateToScreen("WeeklyForecast")}
+          />
+        </>
       ) : (
         <Text>Loading...</Text>
       )}
