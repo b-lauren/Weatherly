@@ -1,53 +1,58 @@
 import React from "react"
 import {
   createStackNavigator,
-  StackNavigationProp,
+  CardStyleInterpolators,
 } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
+import { Platform } from "react-native"
 import HomeScreen from "../screens/HomeScreen"
 import { ForecastScreen } from "../screens/ForecastScreen"
 import { CitySearch } from "../screens/CitySearch"
 import { SavedLocations } from "../screens/SavedLocations"
+import NavBar from "../components/NavBar"
 
 export type MainStackParamList = {
-  Home: undefined
+  Home: { latitude: number; longitude: number } | undefined
   WeeklyForecast: undefined
   CitySearch: undefined
   SavedLocations: undefined
-  //   Forecast: { latitude: number; longitude: number }; // Example params for Forecast
 }
 
-// Create the stack navigator with typed params
 const Stack = createStackNavigator<MainStackParamList>()
 
 const MainStackNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={({ route }) => ({
+          header: () => <NavBar currentRoute={route.name} />,
+        })}
+      >
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
-        {/* <Stack.Screen
-            name="Forecast"
-            component={ForecastScreen}
-            initialParams={{ latitude: 0, longitude: 0 }} // Example initial params if needed
-          /> */}
         <Stack.Screen
           name="WeeklyForecast"
           component={ForecastScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen
           name="CitySearch"
           component={CitySearch}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+            cardStyleInterpolator: Platform.select({
+              ios: CardStyleInterpolators.forVerticalIOS,
+              android: CardStyleInterpolators.forFadeFromBottomAndroid,
+            }),
+          }}
         />
-           <Stack.Screen
+        <Stack.Screen
           name="SavedLocations"
           component={SavedLocations}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>

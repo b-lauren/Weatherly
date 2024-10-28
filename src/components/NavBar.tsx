@@ -1,34 +1,51 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native"
+import React from "react"
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { MainStackParamList } from "../navigation/MainStack"
 
 interface NavBarProps {
-  label: string
-  iconName: keyof typeof Ionicons.glyphMap
-  onLabelPress?: () => void 
-  onIconPress?: () => void 
+  currentRoute: string
 }
 
-export const NavBar = ({
-  label,
-  iconName,
-  onLabelPress,
-  onIconPress,
-}: NavBarProps) => {
+export const NavBar = ({ currentRoute }: NavBarProps) => {
+  const navigation = useNavigation<StackNavigationProp<MainStackParamList>>()
+
+  const showSaved = currentRoute !== "SavedLocations"
+  const showSearch = currentRoute !== "CitySearch"
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity activeOpacity={0.6} onPress={onLabelPress}>
-        <Text style={styles.text}>{label}</Text>
-      </TouchableOpacity>
+      <View style={styles.leftContainer}>
+        {navigation.canGoBack() && (
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
 
-      <TouchableOpacity activeOpacity={0.6} onPress={onIconPress}>
-        <Ionicons name={iconName} size={34} color="white" />
-      </TouchableOpacity>
+      <View style={styles.rightContainer}>
+        {showSaved && (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={() => navigation.navigate("SavedLocations")}
+          >
+            <Text style={styles.text}>Saved</Text>
+          </TouchableOpacity>
+        )}
+        {showSearch && (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={() => navigation.navigate("CitySearch")}
+          >
+            <Ionicons name="add" size={34} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   )
 }
@@ -36,15 +53,26 @@ export const NavBar = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 24,
+    backgroundColor: "#0D5A6C",
+  },
+  leftContainer: {
+    flex: 1,
   },
   text: {
     color: "white",
     fontSize: 14,
     marginRight: 18,
+  },
+  backButton: {
+    marginRight: "auto",
+  },
+  rightContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 })
 

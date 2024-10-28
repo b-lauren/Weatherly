@@ -1,6 +1,17 @@
 import React from "react"
-import { Text } from "react-native"
+import { Text, StyleSheet, View } from "react-native"
 
 export const ForecastScreen = () => {
-  return <Text>Weekly forecast here!</Text>
+  return (
+    <View style={styles.container}>
+      <Text>Weekly forecast screen!</Text>
+    </View>
+  )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#0D5A6C",
+  },
+})

@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react"
 import { View, Text, StyleSheet } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
+import AntDesign from "@expo/vector-icons/AntDesign"
 
 interface WeatherBannerProps {
   location: string
@@ -20,9 +21,13 @@ export const WeatherBanner = ({
       <Text style={styles.locationText}>
         {location}, {country}
       </Text>
+
       <Text style={styles.temperatureText}>{Math.floor(temperature)}°C</Text>
-      <Text style={styles.descriptionText}>{description}</Text>
-      <Ionicons name="cloud" size={34} color="white" />
+      <View style={styles.descriptionContainer}>
+        <Ionicons name="cloud" size={34} color="white" />
+        <Text style={styles.descriptionText}>{description}</Text>
+      </View>
+      {/* <AntDesign name="hearto" size={18} color="white" /> */}
     </View>
   )
 }
@@ -47,9 +52,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 8,
   },
+  descriptionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 20,
+  },
   descriptionText: {
     color: "white",
     fontSize: 16,
-    marginBottom: 8,
+    marginLeft: 8,
   },
 })

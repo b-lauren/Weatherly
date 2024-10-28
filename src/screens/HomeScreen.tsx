@@ -2,11 +2,16 @@ import React, { useState, useEffect } from "react"
 import { View, Text, StyleSheet } from "react-native"
 import * as Location from "expo-location"
 import axios from "axios"
-import { NavBar } from "../components/NavBar"
 import { WeatherBanner } from "../components/WeatherBanner"
 import IconButton from "../components/IconButton"
-import { useNavigation, NavigationProp } from "@react-navigation/native"
+import {
+  useNavigation,
+  NavigationProp,
+  RouteProp,
+  useRoute,
+} from "@react-navigation/native"
 import { MainStackParamList } from "../navigation/MainStack"
+import { API_KEY } from "@env"
 
 interface Weather {
   name: string
@@ -26,23 +31,31 @@ const HomeScreen = () => {
   const [error, setError] = useState<string>("")
 
   const navigation = useNavigation<NavigationProp<MainStackParamList>>()
+  const route = useRoute<RouteProp<MainStackParamList, "Home">>()
 
   useEffect(() => {
     const getLocationAndFetchWeather = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== "granted") {
-        setError("Permission to access location was denied")
-        return
-      }
+      // If route parameters are provided, use them instead of the current location
+      if (route.params) {
+        const { latitude, longitude } = route.params
+        fetchWeather(latitude, longitude)
+      } else {
+        // Otherwise, get the user's current location
+        const { status } = await Location.requestForegroundPermissionsAsync()
+        if (status !== "granted") {
+          setError("Permission to access location was denied")
+          return
+        }
 
-      const location = await Location.getCurrentPositionAsync({})
-      const { latitude, longitude } = location.coords
-      console.log("Latitude:", latitude, "Longitude:", longitude)
-      fetchWeather(latitude, longitude)
+        const location = await Location.getCurrentPositionAsync({})
+        const { latitude, longitude } = location.coords
+        console.log("Latitude:", latitude, "Longitude:", longitude)
+        fetchWeather(latitude, longitude)
+      }
     }
 
     getLocationAndFetchWeather()
-  }, [])
+  }, [route.params])
 
   const fetchWeather = async (lat: number, lon: number) => {
     try {
@@ -58,7 +71,7 @@ const HomeScreen = () => {
           params: {
             lat,
             lon,
-            appid: "11ca8e67cea289ea16112f8044135194",
+            appid: API_KEY,
             units: "metric",
           },
         }
@@ -76,18 +89,14 @@ const HomeScreen = () => {
     navigation.navigate(screen)
   }
 
+  console.log("API Key:", API_KEY)
+
   if (error) {
     return <Text>{error}</Text>
   }
 
   return (
     <View style={styles.container}>
-      <NavBar
-        label="Saved"
-        iconName="add"
-        onLabelPress={() => navigateToScreen("SavedLocations")}
-        onIconPress={() => navigateToScreen("CitySearch")}
-      />
       {weather ? (
         <>
           <WeatherBanner
