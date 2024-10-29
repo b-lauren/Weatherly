@@ -1,21 +1,17 @@
 import React from "react"
-import {
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native"
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Text, TouchableOpacity, StyleSheet } from "react-native"
+import Octicons from "@expo/vector-icons/Octicons"
 
 interface IconButtonProps {
-  iconName: keyof typeof AntDesign.glyphMap
+  iconName: keyof typeof Octicons.glyphMap
   title: string
   onPress: () => void
 }
 
-const IconButton = ({ iconName, title, onPress }: IconButtonProps) => (
+const IconButton = ({ title, iconName, onPress }: IconButtonProps) => (
   <TouchableOpacity onPress={onPress} style={styles.container}>
-    <AntDesign name={iconName} size={24} color="white" />
     <Text style={styles.text}>{title}</Text>
+    <Octicons name={iconName} size={20} color="#104FB6" style={styles.icon} />
   </TouchableOpacity>
 )
 
@@ -23,12 +19,23 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     marginTop: 40,
+    marginLeft: 20,
+    backgroundColor: "#FDD902",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 6,
+    width: "48%",
   },
   text: {
-    marginLeft: 8,
-    color: "white",
+    color: "#104FB6",
     fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 10,
+  },
+  icon: {
+    marginLeft: 8,
   },
 })
 

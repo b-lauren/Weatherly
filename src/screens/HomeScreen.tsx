@@ -12,6 +12,8 @@ import {
 } from "@react-navigation/native"
 import { MainStackParamList } from "../navigation/MainStack"
 import { API_KEY } from "@env"
+import { LinearGradient } from "expo-linear-gradient"
+
 
 interface Weather {
   name: string
@@ -29,6 +31,8 @@ interface Weather {
 const HomeScreen = () => {
   const [weather, setWeather] = useState<Weather | null>(null)
   const [error, setError] = useState<string>("")
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
 
   const navigation = useNavigation<NavigationProp<MainStackParamList>>()
   const route = useRoute<RouteProp<MainStackParamList, "Home">>()
@@ -38,18 +42,22 @@ const HomeScreen = () => {
       // If route parameters are provided, use them instead of the current location
       if (route.params) {
         const { latitude, longitude } = route.params
+        setLatitude(latitude);
+        setLongitude(longitude);
         fetchWeather(latitude, longitude)
       } else {
         // Otherwise, get the user's current location
         const { status } = await Location.requestForegroundPermissionsAsync()
         if (status !== "granted") {
-          setError("Permission to access location was denied")
+          setError("Location access denied. Please enable location permissions or search for a city manually to view the current forecast.")
           return
         }
 
         const location = await Location.getCurrentPositionAsync({})
         const { latitude, longitude } = location.coords
         console.log("Latitude:", latitude, "Longitude:", longitude)
+        setLatitude(latitude);
+        setLongitude(longitude);
         fetchWeather(latitude, longitude)
       }
     }
@@ -73,6 +81,7 @@ const HomeScreen = () => {
             lon,
             appid: API_KEY,
             units: "metric",
+            lang: 'en',
           },
         }
       )
@@ -85,11 +94,12 @@ const HomeScreen = () => {
     }
   }
 
-  const navigateToScreen = (screen: keyof MainStackParamList) => {
-    navigation.navigate(screen)
+  const navigateToWeeklyForecast = () => {
+    if (latitude !== null && longitude !== null && weather) {
+      navigation.navigate("WeeklyForecast", { latitude, longitude, cityName: weather.name  });
+      console.log('navigating to weekly forecast', latitude, longitude);
+    }
   }
-
-  console.log("API Key:", API_KEY)
 
   if (error) {
     return <Text>{error}</Text>
@@ -97,6 +107,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+          colors={["#0D5A6C", "#1E9BA6", "#0D5A6C"]}
+          style={{flex: 1}}
+        >
       {weather ? (
         <>
           <WeatherBanner
@@ -107,14 +121,15 @@ const HomeScreen = () => {
           />
           {/* <Text> Add more info about current weather conditions</Text> */}
           <IconButton
-            iconName="calendar"
-            title="View weekly forecast"
-            onPress={() => navigateToScreen("WeeklyForecast")}
+            iconName="chevron-right"
+            title="5-day Forecast"
+            onPress={navigateToWeeklyForecast}
           />
         </>
       ) : (
         <Text>Loading...</Text>
       )}
+      </LinearGradient>
     </View>
   )
 }
@@ -122,7 +137,6 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D5A6C",
   },
   text: {
     color: "#000",

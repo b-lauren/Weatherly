@@ -60,7 +60,7 @@ export const CitySearch = () => {
     }
   }
 
-  const debouncedFetchCityData = useCallback(debounce(fetchCityData, 450), [])
+  const debouncedFetchCityData = useCallback(debounce(fetchCityData, 400), [])
 
   const handleChangeText = (cityName: string) => {
     setText(cityName)

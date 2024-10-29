@@ -35,7 +35,8 @@ export const WeatherBanner = ({
 const styles = StyleSheet.create({
   bannerContainer: {
     marginTop: 30,
-    backgroundColor: "#0D5A6C",
+    // backgroundColor: "#0D5A6C",
+    // backgroundColor: "transparent",
     padding: 20,
     alignItems: "center",
     justifyContent: "center",

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react"
 import { StatusBar } from "expo-status-bar"
-import { StyleSheet, View, SafeAreaView } from "react-native"
+import { StyleSheet, SafeAreaView } from "react-native"
 import MainStackNavigator from "./src/navigation/MainStack"
 
 export default function App() {

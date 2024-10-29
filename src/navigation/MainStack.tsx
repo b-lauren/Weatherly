@@ -13,7 +13,7 @@ import NavBar from "../components/NavBar"
 
 export type MainStackParamList = {
   Home: { latitude: number; longitude: number } | undefined
-  WeeklyForecast: undefined
+  WeeklyForecast: { latitude: number; longitude: number; cityName: string }
   CitySearch: undefined
   SavedLocations: undefined
 }
