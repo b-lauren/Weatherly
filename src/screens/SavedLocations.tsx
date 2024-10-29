@@ -3,6 +3,7 @@ import { Text, StyleSheet, View } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 
 export const SavedLocations = () => {
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -10,6 +11,7 @@ export const SavedLocations = () => {
         style={{ flex: 1 }}
       >
         <Text>Your favourite locations</Text>
+    {/* {city} */}
       </LinearGradient>
     </View>
   )

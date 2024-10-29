@@ -13,7 +13,8 @@ import {
 import { MainStackParamList } from "../navigation/MainStack"
 import { API_KEY } from "@env"
 import { LinearGradient } from "expo-linear-gradient"
-
+import { fetchWeatherAPI } from "../services/fetchWeather"
+import Entypo from '@expo/vector-icons/Entypo';
 
 interface Weather {
   name: string
@@ -68,23 +69,8 @@ const HomeScreen = () => {
   const fetchWeather = async (lat: number, lon: number) => {
     try {
       console.log("Fetching weather data for lat:", lat, "lon:", lon)
-      const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather`,
-        {
-          data: undefined,
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          params: {
-            lat,
-            lon,
-            appid: API_KEY,
-            units: "metric",
-            lang: 'en',
-          },
-        }
-      )
+      
+      const response = await fetchWeatherAPI({lat, lon});
       setWeather(response.data)
       console.log("response.data", response.data)
     } catch (err) {
@@ -105,6 +91,11 @@ const HomeScreen = () => {
     return <Text>{error}</Text>
   }
 
+  console.log('weather', weather);
+
+  const saveLocation = (city: string) => {
+  }
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -119,6 +110,7 @@ const HomeScreen = () => {
             temperature={weather.main.temp}
             description={weather.weather[0].main}
           />
+          <Entypo name="heart" size={24} color="black" onPress={() => saveLocation(weather.name)}/>
           {/* <Text> Add more info about current weather conditions</Text> */}
           <IconButton
             iconName="chevron-right"
