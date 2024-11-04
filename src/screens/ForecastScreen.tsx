@@ -9,6 +9,7 @@ import ForecastCard from "../components/ForecastCard"
 
 interface ForecastItem {
   dt: number
+  date: Date
   main: {
     temp: number
   }
@@ -42,7 +43,17 @@ export const ForecastScreen = () => {
             },
           }
         )
-        setForecastData(response.data)
+
+        const convertedData = {
+          ...response.data,
+          list: response.data.list.map((item) => ({
+            ...item,
+            //store timestamp as a date
+            date: new Date(item.dt * 1000), 
+          })),
+        };
+
+        setForecastData(convertedData)
       } catch (error) {
         setError("Error fetching forecast data")
       }
@@ -55,27 +66,43 @@ export const ForecastScreen = () => {
     <Text style={styles.loadingText}>Loading forecast...</Text>
   )
 
-  const renderForecast = () =>
-    forecastData?.list.map((item, index) => {
-      if (index < 5) {
-        const date = new Date(item.dt * 1000)
-        const dayName = date.toLocaleDateString("en-US", { weekday: "short" })
-        const dayOfMonth = date.getDate()
-        const monthName = date.toLocaleDateString("en-US", { month: "short" })
+  const renderForecast = () => {
+    if (!forecastData) return null
 
-        return (
-          <ForecastCard
-            key={index}
-            day={dayName}
-            date={monthName}
-            month={dayOfMonth}
-            description={item.weather[0].description}
-            temperature={Math.trunc(item.main.temp)}
-          />
-        )
+    const dailyForecasts: ForecastItem[] = []
+    const todayDate = new Date().getDate();
+
+    forecastData?.list.map((item) => {
+      const day = item.date.getDate();
+
+      //Skip the forecast for today
+      if (day === todayDate) {
+        return
       }
-      return null
+
+      // API returns 3 hour forecast for 5 days - only add the first forecast for each day
+      if (day !== todayDate && !dailyForecasts.some((forecast) => forecast.date.getDate() === day)) {
+        dailyForecasts.push(item);
+      }
     })
+
+    return dailyForecasts.slice(0, 5).map((item) => {
+      const dayName = item.date.toLocaleDateString("en-US", { weekday: "short" })
+      const dayOfMonth = item.date.getDate()
+      const monthName = item.date.toLocaleDateString("en-US", { month: "short" })
+
+      return (
+        <ForecastCard
+          key={item.dt}
+          day={dayName}
+          date={dayOfMonth.toString()}
+          month={monthName}
+          description={item.weather[0].description}
+          temperature={Math.trunc(item.main.temp)}
+        />
+      )
+    })
+  }
 
   return (
     <View style={styles.container}>

@@ -1,17 +1,19 @@
-import { observable } from "@legendapp/state";
+import { observable } from "@legendapp/state"
 
-  interface Store {
-    cities: string[];
-    addCity: (city: string) => void;
-    // removeCity: (city: string) => void;
-  }
+interface Store {
+  cities: string[]
+  addCity: (city: string) => void
+  removeCity: (city: string) => void
+}
 
-  export const store$ = observable<Store>({
-    cities: [],
+export const store$ = observable<Store>({
+  cities: [],
 
-    //check if already exists, if it doesn't push
-   
-    addCity: (city: string) => {
-        store$.cities.set(store$.cities.concat([city]));
-      },
-  });
+  addCity: (city: string) => {
+    store$.cities.set(store$.cities.concat([city]))
+  },
+
+  removeCity: (city: string) => {
+    store$.cities.set(store$.cities.get().filter((c) => c !== city))
+  },
+})

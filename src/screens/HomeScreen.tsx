@@ -17,15 +17,22 @@ import { fetchWeatherAPI } from "../services/fetchWeather"
 import Entypo from "@expo/vector-icons/Entypo"
 import { store$ } from "../storage/storeFavourites"
 import { observer } from "@legendapp/state/react"
+import { CurrentConditionsCard } from "../components/CurrentConditionsCard"
 
 interface Weather {
   name: string
   main: {
     temp: number
+    feels_like: number
+    // pressure: number
+    humidity: number
   }
   weather: {
     main: string
   }[]
+  wind: {
+    speed: number
+  }
   sys: {
     country: string
   }
@@ -39,6 +46,8 @@ const HomeScreen = observer(() => {
 
   const navigation = useNavigation<NavigationProp<MainStackParamList>>()
   const route = useRoute<RouteProp<MainStackParamList, "Home">>()
+
+  const isCitySaved = (city: string) => store$.cities.get().includes(city)
 
   useEffect(() => {
     const getLocationAndFetchWeather = async () => {
@@ -102,7 +111,11 @@ const HomeScreen = observer(() => {
   console.log("weather", weather)
 
   const saveLocation = (city: string) => {
-    store$.addCity(city)
+    if (isCitySaved(city)) {
+      store$.removeCity(city)
+    } else {
+      store$.addCity(city)
+    }
   }
 
   return (
@@ -119,18 +132,34 @@ const HomeScreen = observer(() => {
               temperature={weather.main.temp}
               description={weather.weather[0].main}
             />
-            <Entypo
-              name="heart"
-              size={24}
-              color="black"
-              onPress={() => saveLocation(weather.name)}
-            />
-            {/* <Text> Add more info about current weather conditions</Text> */}
-            <IconButton
-              iconName="chevron-right"
-              title="5-day Forecast"
-              onPress={navigateToWeeklyForecast}
-            />
+            <View style={styles.conditionsContainer}>
+              <Entypo
+                name={isCitySaved(weather.name) ? "heart" : "heart-outlined"}
+                size={24}
+                color="white"
+                onPress={() => saveLocation(weather.name)}
+              />
+
+              <View style={styles.cardsRow}>
+                <CurrentConditionsCard
+                  title="Feels like"
+                  value={`${Math.round(weather.main.feels_like)}°c`}
+                />
+                <CurrentConditionsCard
+                  title="Wind speed"
+                  value={`${weather.wind.speed} m/s`}
+                />
+                <CurrentConditionsCard
+                  title="Humidity"
+                  value={`${weather.main.humidity}%`}
+                />
+              </View>
+              <IconButton
+                iconName="chevron-right"
+                title="5-day Forecast"
+                onPress={navigateToWeeklyForecast}
+              />
+            </View>
           </>
         ) : (
           <Text>Loading...</Text>
@@ -143,6 +172,16 @@ const HomeScreen = observer(() => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  conditionsContainer: {
+    alignItems: "center",
+  },
+  cardsRow: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginVertical: 20,
+    paddingHorizontal: 10,
   },
   text: {
     color: "#000",

@@ -1,12 +1,12 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from "react"
+import { View, Text, StyleSheet } from "react-native"
 
 interface ForecastCardProps {
-  day: string;
-  date: string;
-  month: number;
-  description: string;
-  temperature: number;
+  day: string
+  date: string
+  month: string
+  description: string
+  temperature: number
 }
 
 const ForecastCard = ({
@@ -20,13 +20,15 @@ const ForecastCard = ({
     <View style={styles.cardContainer}>
       <View style={styles.dateContainer}>
         <Text style={[styles.dayText, styles.text]}>{day}</Text>
-        <Text style={styles.text}>{month} {date}</Text>
+        <Text style={styles.text}>
+          {month} {date}
+        </Text>
       </View>
       <Text style={[styles.description, styles.text]}>{description}</Text>
       <Text style={styles.temperature}>{temperature}°C</Text>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -60,6 +62,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
   },
-});
+})
 
-export default ForecastCard;
+export default ForecastCard
