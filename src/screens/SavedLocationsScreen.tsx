@@ -1,13 +1,12 @@
 import React from "react"
-import { Text, StyleSheet, View} from "react-native"
+import { Text, StyleSheet, View } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
-import { observer, Reactive, useObservable } from "@legendapp/state/react"
-import { store$ } from '../storage/storeFavourites';
+import { store$ } from "../storage/storeFavourites"
 
-export const SavedLocations = () => {
+const SavedLocationsScreen = () => {
   const cities = store$.cities.get()
 
-  console.log('testtt', cities);
+  console.log("testtt", cities)
 
   return (
     <View style={styles.container}>
@@ -16,8 +15,9 @@ export const SavedLocations = () => {
         style={{ flex: 1 }}
       >
         <Text>Your favourite locations</Text>
-        {cities.map((city) => (<Text>{city}</Text>))}
-
+        {cities.map((city) => (
+          <Text key={city}>{city}</Text>
+        ))}
       </LinearGradient>
     </View>
   )
@@ -29,3 +29,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D5A6C",
   },
 })
+
+export default SavedLocationsScreen

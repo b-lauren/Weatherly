@@ -3,25 +3,16 @@ import {
   StyleSheet,
   View,
   TextInput,
-  Button,
   Text,
   TouchableOpacity,
 } from "react-native"
 import Entypo from "@expo/vector-icons/Entypo"
-import axios from "axios"
 import { debounce } from "lodash"
-import { API_KEY } from "@env"
 import { useNavigation, NavigationProp } from "@react-navigation/native"
 import { MainStackParamList } from "../navigation/MainStack"
+import { fetchLocationsAPI, CityData } from "../services/fetchLocations"
 
-interface CityData {
-  name: string
-  lat: number
-  lon: number
-  country: string
-}
-
-export const CitySearch = () => {
+const CitySearchScreen = () => {
   const [text, setText] = useState("")
   const [cities, setCities] = useState<CityData[]>([])
 
@@ -29,17 +20,7 @@ export const CitySearch = () => {
 
   const fetchCityData = async (cityName: string) => {
     try {
-      const response = await axios.get(
-        `https://api.openweathermap.org/geo/1.0/direct`,
-        {
-          params: {
-            q: cityName,
-            limit: 5,
-            appid: API_KEY,
-            lang: "en",
-          },
-        }
-      )
+      const response = await fetchLocationsAPI({ cityName })
 
       const removeDuplicateCities = response.data.reduce(
         (accumulator: CityData[], city: CityData) => {
@@ -110,7 +91,7 @@ export const CitySearch = () => {
           <TouchableOpacity
             key={`${city.name}-${city.lat}`}
             onPress={() =>
-              navigation.navigate("Home", {
+              navigation.navigate("CurrentForecast", {
                 latitude: city.lat,
                 longitude: city.lon,
               })
@@ -171,3 +152,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 })
+
+export default CitySearchScreen

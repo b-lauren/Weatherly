@@ -2,28 +2,16 @@ import React, { useState, useEffect } from "react"
 import { Text, StyleSheet, View } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { RouteProp, useRoute } from "@react-navigation/native"
-import axios from "axios"
 import { MainStackParamList } from "../navigation/MainStack"
-import { API_KEY } from "@env"
 import ForecastCard from "../components/ForecastCard"
+import {
+  fetchFiveDayForecastAPI,
+  ForecastData,
+  ForecastItem,
+} from "../services/fetchFiveDayForecast"
 
-interface ForecastItem {
-  dt: number
-  date: Date
-  main: {
-    temp: number
-  }
-  weather: {
-    description: string
-  }[]
-}
-
-interface ForecastData {
-  list: ForecastItem[]
-}
-
-export const ForecastScreen = () => {
-  const route = useRoute<RouteProp<MainStackParamList, "WeeklyForecast">>()
+const FiveDayForecastScreen = () => {
+  const route = useRoute<RouteProp<MainStackParamList, "FiveDayForecast">>()
   const { cityName, latitude, longitude } = route.params
 
   const [forecastData, setForecastData] = useState<ForecastData | null>(null)
@@ -32,26 +20,16 @@ export const ForecastScreen = () => {
   useEffect(() => {
     const fetchForecast = async () => {
       try {
-        const response = await axios.get<ForecastData>(
-          `https://api.openweathermap.org/data/2.5/forecast`,
-          {
-            params: {
-              lat: latitude,
-              lon: longitude,
-              appid: API_KEY,
-              units: "metric",
-            },
-          }
-        )
+        const response = await fetchFiveDayForecastAPI({ latitude, longitude })
 
-        const convertedData = {
+        const convertedData: ForecastData = {
           ...response.data,
           list: response.data.list.map((item) => ({
             ...item,
             //store timestamp as a date
-            date: new Date(item.dt * 1000), 
+            date: new Date(item.dt * 1000),
           })),
-        };
+        }
 
         setForecastData(convertedData)
       } catch (error) {
@@ -70,26 +48,32 @@ export const ForecastScreen = () => {
     if (!forecastData) return null
 
     const dailyForecasts: ForecastItem[] = []
-    const todayDate = new Date().getDate();
+    const todayDate = new Date().getDate()
 
     forecastData?.list.map((item) => {
-      const day = item.date.getDate();
+      const day = item.date.getDate()
 
-      //Skip the forecast for today
       if (day === todayDate) {
         return
       }
 
       // API returns 3 hour forecast for 5 days - only add the first forecast for each day
-      if (day !== todayDate && !dailyForecasts.some((forecast) => forecast.date.getDate() === day)) {
-        dailyForecasts.push(item);
+      if (
+        day !== todayDate &&
+        !dailyForecasts.some((forecast) => forecast.date.getDate() === day)
+      ) {
+        dailyForecasts.push(item)
       }
     })
 
     return dailyForecasts.slice(0, 5).map((item) => {
-      const dayName = item.date.toLocaleDateString("en-US", { weekday: "short" })
+      const dayName = item.date.toLocaleDateString("en-US", {
+        weekday: "short",
+      })
       const dayOfMonth = item.date.getDate()
-      const monthName = item.date.toLocaleDateString("en-US", { month: "short" })
+      const monthName = item.date.toLocaleDateString("en-US", {
+        month: "short",
+      })
 
       return (
         <ForecastCard
@@ -149,4 +133,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ForecastScreen
+export default FiveDayForecastScreen

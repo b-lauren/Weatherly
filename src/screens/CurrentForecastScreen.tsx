@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { View, Text, StyleSheet } from "react-native"
 import * as Location from "expo-location"
-import axios from "axios"
-import { WeatherBanner } from "../components/WeatherBanner"
+import WeatherBanner from "../components/WeatherBanner"
 import IconButton from "../components/IconButton"
 import {
   useNavigation,
@@ -11,41 +10,24 @@ import {
   useRoute,
 } from "@react-navigation/native"
 import { MainStackParamList } from "../navigation/MainStack"
-import { API_KEY } from "@env"
 import { LinearGradient } from "expo-linear-gradient"
-import { fetchWeatherAPI } from "../services/fetchWeather"
+import {
+  fetchCurrentWeatherAPI,
+  CurrentWeather,
+} from "../services/fetchCurrentWeather"
 import Entypo from "@expo/vector-icons/Entypo"
 import { store$ } from "../storage/storeFavourites"
 import { observer } from "@legendapp/state/react"
-import { CurrentConditionsCard } from "../components/CurrentConditionsCard"
+import CurrentConditionsCard from "../components/CurrentConditionsCard"
 
-interface Weather {
-  name: string
-  main: {
-    temp: number
-    feels_like: number
-    // pressure: number
-    humidity: number
-  }
-  weather: {
-    main: string
-  }[]
-  wind: {
-    speed: number
-  }
-  sys: {
-    country: string
-  }
-}
-
-const HomeScreen = observer(() => {
-  const [weather, setWeather] = useState<Weather | null>(null)
+const CurrentForecastScreen = observer(() => {
+  const [weather, setWeather] = useState<CurrentWeather | null>(null)
   const [error, setError] = useState<string>("")
   const [latitude, setLatitude] = useState<number | null>(null)
   const [longitude, setLongitude] = useState<number | null>(null)
 
   const navigation = useNavigation<NavigationProp<MainStackParamList>>()
-  const route = useRoute<RouteProp<MainStackParamList, "Home">>()
+  const route = useRoute<RouteProp<MainStackParamList, "CurrentForecast">>()
 
   const isCitySaved = (city: string) => store$.cities.get().includes(city)
 
@@ -83,7 +65,7 @@ const HomeScreen = observer(() => {
     try {
       console.log("Fetching weather data for lat:", lat, "lon:", lon)
 
-      const response = await fetchWeatherAPI({ lat, lon })
+      const response = await fetchCurrentWeatherAPI({ lat, lon })
       setWeather(response.data)
       console.log("response.data", response.data)
     } catch (err) {
@@ -95,7 +77,7 @@ const HomeScreen = observer(() => {
 
   const navigateToWeeklyForecast = () => {
     if (latitude !== null && longitude !== null && weather) {
-      navigation.navigate("WeeklyForecast", {
+      navigation.navigate("FiveDayForecast", {
         latitude,
         longitude,
         cityName: weather.name,
@@ -189,4 +171,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default HomeScreen
+export default CurrentForecastScreen

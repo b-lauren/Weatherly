@@ -6,7 +6,7 @@ interface CurrentConditionsCardProps {
   value: number | string
 }
 
-export const CurrentConditionsCard = ({
+const CurrentConditionsCard = ({
   title,
   value,
 }: CurrentConditionsCardProps) => {
@@ -43,3 +43,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 })
+
+export default CurrentConditionsCard

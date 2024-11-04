@@ -5,15 +5,15 @@ import {
 } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
 import { Platform } from "react-native"
-import HomeScreen from "../screens/HomeScreen"
-import { ForecastScreen } from "../screens/ForecastScreen"
-import { CitySearch } from "../screens/CitySearch"
-import { SavedLocations } from "../screens/SavedLocations"
+import CurrentForecastScreen from "../screens/CurrentForecastScreen"
+import FiveDayForecastScreen from "../screens/FiveDayForecastScreen"
+import CitySearchScreen from "../screens/CitySearchScreen"
+import SavedLocationsScreen from "../screens/SavedLocationsScreen"
 import NavBar from "../components/NavBar"
 
 export type MainStackParamList = {
-  Home: { latitude: number; longitude: number } | undefined
-  WeeklyForecast: { latitude: number; longitude: number; cityName: string }
+  CurrentForecast: { latitude: number; longitude: number } | undefined
+  FiveDayForecast: { latitude: number; longitude: number; cityName: string }
   CitySearch: undefined
   SavedLocations: undefined
 }
@@ -29,18 +29,18 @@ const MainStackNavigator = () => {
         })}
       >
         <Stack.Screen
-          name="Home"
-          component={HomeScreen}
+          name="CurrentForecast"
+          component={CurrentForecastScreen}
           options={{ headerShown: true }}
         />
         <Stack.Screen
-          name="WeeklyForecast"
-          component={ForecastScreen}
+          name="FiveDayForecast"
+          component={FiveDayForecastScreen}
           options={{ headerShown: true }}
         />
         <Stack.Screen
           name="CitySearch"
-          component={CitySearch}
+          component={CitySearchScreen}
           options={{
             headerShown: true,
             cardStyleInterpolator: Platform.select({
@@ -51,7 +51,7 @@ const MainStackNavigator = () => {
         />
         <Stack.Screen
           name="SavedLocations"
-          component={SavedLocations}
+          component={SavedLocationsScreen}
           options={{ headerShown: true }}
         />
       </Stack.Navigator>
