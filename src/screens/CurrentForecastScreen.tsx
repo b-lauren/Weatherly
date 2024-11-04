@@ -19,6 +19,7 @@ import Entypo from "@expo/vector-icons/Entypo"
 import { store$ } from "../storage/storeFavourites"
 import { observer } from "@legendapp/state/react"
 import CurrentConditionsCard from "../components/CurrentConditionsCard"
+import StatusMessage from "../components/StatusMessage"
 
 const CurrentForecastScreen = observer(() => {
   const [weather, setWeather] = useState<CurrentWeather | null>(null)
@@ -86,10 +87,6 @@ const CurrentForecastScreen = observer(() => {
     }
   }
 
-  if (error) {
-    return <Text>{error}</Text>
-  }
-
   console.log("weather", weather)
 
   const saveLocation = (city: string) => {
@@ -104,9 +101,16 @@ const CurrentForecastScreen = observer(() => {
     <View style={styles.container}>
       <LinearGradient
         colors={["#0D5A6C", "#1E9BA6", "#0D5A6C"]}
-        style={{ flex: 1 }}
+        style={styles.container}
       >
-        {weather ? (
+        {error ? (
+          <StatusMessage subtitle={error} />
+        ) : !weather ? (
+          <StatusMessage
+            title="Loading..."
+            subtitle="Fetching weather conditions 🌞🌤️🌧️"
+          />
+        ) : (
           <>
             <WeatherBanner
               location={weather.name}
@@ -143,8 +147,6 @@ const CurrentForecastScreen = observer(() => {
               />
             </View>
           </>
-        ) : (
-          <Text>Loading...</Text>
         )}
       </LinearGradient>
     </View>

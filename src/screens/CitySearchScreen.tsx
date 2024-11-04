@@ -11,10 +11,12 @@ import { debounce } from "lodash"
 import { useNavigation, NavigationProp } from "@react-navigation/native"
 import { MainStackParamList } from "../navigation/MainStack"
 import { fetchLocationsAPI, CityData } from "../services/fetchLocations"
+import StatusMessage from "../components/StatusMessage"
 
 const CitySearchScreen = () => {
   const [text, setText] = useState("")
   const [cities, setCities] = useState<CityData[]>([])
+  const [error, setError] = useState<string | null>(null)
 
   const navigation = useNavigation<NavigationProp<MainStackParamList>>()
 
@@ -37,7 +39,7 @@ const CitySearchScreen = () => {
 
       setCities(removeDuplicateCities)
     } catch (error) {
-      console.error("Error fetching city data:", error)
+      setError("Oops - failed to fetch any city data. Please try again.")
     }
   }
 
@@ -56,6 +58,7 @@ const CitySearchScreen = () => {
   const clearInput = () => {
     setText("")
     setCities([])
+    setError(null)
   }
 
   return (
@@ -87,23 +90,27 @@ const CitySearchScreen = () => {
       </View>
 
       <View style={styles.resultsContainer}>
-        {cities.map((city) => (
-          <TouchableOpacity
-            key={`${city.name}-${city.lat}`}
-            onPress={() =>
-              navigation.navigate("CurrentForecast", {
-                latitude: city.lat,
-                longitude: city.lon,
-              })
-            }
-          >
-            <View style={styles.cityBox}>
-              <Text key={`${city.name}-${city.lat}`} style={styles.cityText}>
-                {city.name}, {city.country}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+        {error ? (
+          <StatusMessage subtitle={error} />
+        ) : (
+          cities.map((city) => (
+            <TouchableOpacity
+              key={`${city.name}-${city.lat}`}
+              onPress={() =>
+                navigation.navigate("CurrentForecast", {
+                  latitude: city.lat,
+                  longitude: city.lon,
+                })
+              }
+            >
+              <View style={styles.cityBox}>
+                <Text key={`${city.name}-${city.lat}`} style={styles.cityText}>
+                  {city.name}, {city.country}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
       </View>
     </View>
   )

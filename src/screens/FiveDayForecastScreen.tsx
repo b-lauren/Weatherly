@@ -9,6 +9,7 @@ import {
   ForecastData,
   ForecastItem,
 } from "../services/fetchFiveDayForecast"
+import StatusMessage from "../components/StatusMessage"
 
 const FiveDayForecastScreen = () => {
   const route = useRoute<RouteProp<MainStackParamList, "FiveDayForecast">>()
@@ -39,10 +40,6 @@ const FiveDayForecastScreen = () => {
 
     fetchForecast()
   }, [latitude, longitude])
-
-  const renderLoading = () => (
-    <Text style={styles.loadingText}>Loading forecast...</Text>
-  )
 
   const renderForecast = () => {
     if (!forecastData) return null
@@ -94,9 +91,19 @@ const FiveDayForecastScreen = () => {
         colors={["#0D5A6C", "#1E9BA6", "#0D5A6C"]}
         style={{ flex: 1 }}
       >
-        <Text style={styles.cityText}>{cityName}</Text>
-        {forecastData ? renderForecast() : renderLoading()}
-        {error && <Text style={styles.errorText}>{error}</Text>}
+        {error ? (
+          <StatusMessage subtitle={error} />
+        ) : forecastData ? (
+          <>
+            <Text style={styles.cityText}>{cityName}</Text>
+            {renderForecast()}
+          </>
+        ) : (
+          <StatusMessage
+            title="Loading..."
+            subtitle="Fetching five day forecast data"
+          />
+        )}
       </LinearGradient>
     </View>
   )
