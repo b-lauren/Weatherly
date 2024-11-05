@@ -1,5 +1,11 @@
 import React from "react"
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useNavigation, StackActions } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -12,7 +18,7 @@ interface NavBarProps {
 export const NavBar = ({ currentRoute }: NavBarProps) => {
   const navigation = useNavigation<StackNavigationProp<MainStackParamList>>()
 
-  const isCitySearch = currentRoute === "CitySearch";
+  const isCitySearch = currentRoute === "CitySearch"
   const showSaved = currentRoute !== "SavedLocations"
   const showSearch = currentRoute !== "CitySearch"
 
@@ -31,7 +37,9 @@ export const NavBar = ({ currentRoute }: NavBarProps) => {
 
       <View style={styles.rightContainer}>
         {isCitySearch ? (
-          <TouchableOpacity onPress={() => navigation.dispatch(StackActions.popToTop())}>
+          <TouchableOpacity
+            onPress={() => navigation.dispatch(StackActions.popToTop())}
+          >
             <Text style={styles.text}>Cancel</Text>
           </TouchableOpacity>
         ) : (
@@ -56,8 +64,8 @@ export const NavBar = ({ currentRoute }: NavBarProps) => {
         )}
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -67,6 +75,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 24,
     backgroundColor: "#0D5A6C",
+    paddingTop: Platform.OS === "android" ? 60 : 0,
   },
   leftContainer: {
     flex: 1,

@@ -97,7 +97,7 @@ const CitySearchScreen = () => {
             <TouchableOpacity
               key={`${city.name}-${city.lat}`}
               onPress={() =>
-                navigation.navigate("CurrentForecast", {
+                navigation.navigate("Home", {
                   latitude: city.lat,
                   longitude: city.lon,
                 })

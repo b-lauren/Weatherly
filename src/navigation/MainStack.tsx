@@ -5,14 +5,14 @@ import {
 } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native"
 import { Platform } from "react-native"
-import CurrentForecastScreen from "../screens/CurrentForecastScreen"
+import HomeScreen from "../screens/HomeScreen"
 import FiveDayForecastScreen from "../screens/FiveDayForecastScreen"
 import CitySearchScreen from "../screens/CitySearchScreen"
 import SavedLocationsScreen from "../screens/SavedLocationsScreen"
 import NavBar from "../components/NavBar"
 
 export type MainStackParamList = {
-  CurrentForecast: { latitude: number; longitude: number } | undefined
+  Home: { latitude: number; longitude: number } | undefined
   FiveDayForecast: { latitude: number; longitude: number; cityName: string }
   CitySearch: undefined
   SavedLocations: undefined
@@ -29,8 +29,8 @@ const MainStackNavigator = () => {
         })}
       >
         <Stack.Screen
-          name="CurrentForecast"
-          component={CurrentForecastScreen}
+          name="Home"
+          component={HomeScreen}
           options={{ headerShown: true }}
         />
         <Stack.Screen

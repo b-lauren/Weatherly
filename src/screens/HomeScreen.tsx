@@ -21,14 +21,14 @@ import { observer } from "@legendapp/state/react"
 import CurrentConditionsCard from "../components/CurrentConditionsCard"
 import StatusMessage from "../components/StatusMessage"
 
-const CurrentForecastScreen = observer(() => {
+const HomeScreen = observer(() => {
   const [weather, setWeather] = useState<CurrentWeather | null>(null)
   const [error, setError] = useState<string>("")
   const [latitude, setLatitude] = useState<number | null>(null)
   const [longitude, setLongitude] = useState<number | null>(null)
 
   const navigation = useNavigation<NavigationProp<MainStackParamList>>()
-  const route = useRoute<RouteProp<MainStackParamList, "CurrentForecast">>()
+  const route = useRoute<RouteProp<MainStackParamList, "Home">>()
 
   const isCitySaved = (city: string) => store$.cities.get().includes(city)
 
@@ -165,4 +165,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CurrentForecastScreen
+export default HomeScreen

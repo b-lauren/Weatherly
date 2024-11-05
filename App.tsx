@@ -2,9 +2,8 @@ import React from "react"
 import { StatusBar } from "expo-status-bar"
 import { StyleSheet, SafeAreaView } from "react-native"
 import MainStackNavigator from "./src/navigation/MainStack"
-import { observer } from "@legendapp/state/react"
 
-export default observer(function App() {
+export default function App() {
   return (
     <>
       <StatusBar style="auto" />
@@ -13,7 +12,7 @@ export default observer(function App() {
       </SafeAreaView>
     </>
   )
-})
+}
 
 const styles = StyleSheet.create({
   container: {
