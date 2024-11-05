@@ -13,7 +13,7 @@ export interface ForecastItem {
     temp: number
   }
   weather: {
-    description: string
+    icon: string
   }[]
 }
 

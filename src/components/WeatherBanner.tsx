@@ -1,11 +1,11 @@
 import React from "react"
-import { View, Text, StyleSheet } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
+import { View, Text, StyleSheet, Image } from "react-native"
 interface WeatherBannerProps {
   location: string
   country: string
   temperature: number
   description: string
+  icon: string
 }
 
 const WeatherBanner = ({
@@ -13,6 +13,7 @@ const WeatherBanner = ({
   country,
   temperature,
   description,
+  icon,
 }: WeatherBannerProps) => {
   return (
     <View style={styles.bannerContainer}>
@@ -21,7 +22,10 @@ const WeatherBanner = ({
       </Text>
       <Text style={styles.temperatureText}>{Math.floor(temperature)}°C</Text>
       <View style={styles.descriptionContainer}>
-        <Ionicons name="cloud" size={34} color="white" />
+        <Image
+          source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
+          style={styles.icon}
+        />
         <Text style={styles.descriptionText}>{description}</Text>
       </View>
     </View>
@@ -51,12 +55,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 8,
-    marginBottom: 20,
   },
   descriptionText: {
     color: "white",
     fontSize: 16,
     marginLeft: 8,
+  },
+  icon: {
+    width: 50,
+    height: 50,
   },
 })
 

@@ -1,20 +1,20 @@
 import React from "react"
-import { View, Text, StyleSheet } from "react-native"
+import { View, Text, StyleSheet, Image } from "react-native"
 
 interface ForecastCardProps {
-  day: string
-  date: string
-  month: string
-  description: string
+  day?: string
+  date?: string
+  month?: string
   temperature: number
+  icon: string
 }
 
 const ForecastCard = ({
   day,
   date,
   month,
-  description,
   temperature,
+  icon,
 }: ForecastCardProps) => {
   return (
     <View style={styles.cardContainer}>
@@ -24,7 +24,10 @@ const ForecastCard = ({
           {month} {date}
         </Text>
       </View>
-      <Text style={[styles.description, styles.text]}>{description}</Text>
+      <Image
+        source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
+        style={styles.icon}
+      />
       <Text style={styles.temperature}>{temperature}°C</Text>
     </View>
   )
@@ -61,6 +64,10 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 22,
     fontWeight: "bold",
+  },
+  icon: {
+    width: 50,
+    height: 50,
   },
 })
 

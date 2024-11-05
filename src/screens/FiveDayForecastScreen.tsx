@@ -78,8 +78,8 @@ const FiveDayForecastScreen = () => {
           day={dayName}
           date={dayOfMonth.toString()}
           month={monthName}
-          description={item.weather[0].description}
           temperature={Math.trunc(item.main.temp)}
+          icon={item.weather[0].icon}
         />
       )
     })
@@ -127,17 +127,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     marginTop: 10,
-  },
-  loadingText: {
-    color: "#FFF",
-    textAlign: "center",
-    marginTop: 20,
-  },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginTop: 20,
-  },
+  }
 })
 
 export default FiveDayForecastScreen

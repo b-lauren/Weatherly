@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, StyleSheet } from "react-native"
+import { View, StyleSheet } from "react-native"
 import * as Location from "expo-location"
 import WeatherBanner from "../components/WeatherBanner"
 import IconButton from "../components/IconButton"
@@ -52,7 +52,6 @@ const CurrentForecastScreen = observer(() => {
 
         const location = await Location.getCurrentPositionAsync({})
         const { latitude, longitude } = location.coords
-        console.log("Latitude:", latitude, "Longitude:", longitude)
         setLatitude(latitude)
         setLongitude(longitude)
         fetchWeather(latitude, longitude)
@@ -64,14 +63,9 @@ const CurrentForecastScreen = observer(() => {
 
   const fetchWeather = async (lat: number, lon: number) => {
     try {
-      console.log("Fetching weather data for lat:", lat, "lon:", lon)
-
       const response = await fetchCurrentWeatherAPI({ lat, lon })
       setWeather(response.data)
-      console.log("response.data", response.data)
     } catch (err) {
-      //   console.error("Error details:", err.response?.data || err.message)
-      console.log(JSON.stringify(err, null, 2))
       setError("Error fetching weather data")
     }
   }
@@ -83,11 +77,8 @@ const CurrentForecastScreen = observer(() => {
         longitude,
         cityName: weather.name,
       })
-      console.log("navigating to weekly forecast", latitude, longitude)
     }
   }
-
-  console.log("weather", weather)
 
   const saveLocation = (city: string) => {
     if (isCitySaved(city)) {
@@ -117,6 +108,7 @@ const CurrentForecastScreen = observer(() => {
               country={weather.sys.country}
               temperature={weather.main.temp}
               description={weather.weather[0].main}
+              icon={weather.weather[0].icon}
             />
             <View style={styles.conditionsContainer}>
               <Entypo
